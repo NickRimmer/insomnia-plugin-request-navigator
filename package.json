@@ -1,0 +1,71 @@
+{
+  "name": "insomnia-plugin-request-navigator",
+  "version": "0.1.0",
+  "private": true,
+  "insomnia": {
+    "name": "request-navigator",
+    "displayName": "Requests Navigator",
+    "description": "Lost in Requests? Let's Navigate!",
+    "unlisted": true,
+    "images": {
+      "icon": "request-navigator-icon-small.jpg"
+    },
+    "publisher": {
+      "name": "Nick Rimmer",
+      "icon": "https://www.gravatar.com/avatar/53a530a44db8d365a66bcdef9d49e23c"
+    }
+  },
+  "main": "dist/index.js",
+  "author": "Nick Rimmer <NickRimmer@debugging.ninja>",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/NickRimmer/insomnia-plugin-request-navigator.git",
+    "directory": ""
+  },
+  "bugs": {
+    "url": "https://github.com/NickRimmer/insomnia-plugin-request-navigator/issues"
+  },
+  "scripts": {
+    "build-npm": "node npm/generate-package.js && copyfiles -u 2 ./npm/content/* ./dist/",
+    "build": "esr esbuild.ts && npm run build-npm",
+    "watch-trigger": "esr esbuild.ts && npm run install",
+    "watch": "npm run build-npm && npm-watch watch-trigger",
+    "clean": "rimraf dist",
+    "publish": "npm run build && cd dist && npm publish",
+    "publish-dry": "npm run build && cd dist && npm publish --dry-run",
+    "install": "copyfiles -u 1 ./dist/* %appdata%/insomnia/plugins/insomnia-plugin-request-navigator",
+    "install-dev": "copyfiles -u 1 ./dist/* %appdata%/insomnia-app/plugins/insomnia-plugin-request-navigator"
+  },
+  "watch": {
+    "watch-trigger": {
+      "patterns": [
+        "src"
+      ],
+      "extensions": "ts,tsx,scss"
+    }
+  },
+  "dependencies": {
+    "@types/react": "^16.14.5",
+    "@types/react-dom": "^16.9.12",
+    "react": "^17.0.2",
+    "react-dom": "^17.0.2"
+  },
+  "devDependencies": {
+    "@types/node": "^20.3.3",
+    "@typescript-eslint/eslint-plugin": "^5.60.1",
+    "@typescript-eslint/parser": "^5.60.1",
+    "@types/react-dom": "^18.0.6",
+    "copyfiles": "^2.4.1",
+    "esbuild": "^0.18.11",
+    "esbuild-runner": "^2.2.2",
+    "esbuild-sass-plugin": "^2.10.0",
+    "eslint": "^8.44.0",
+    "eslint-plugin-react": "^7.32.2",
+    "npm-watch": "^0.11.0",
+    "request": "^2.88.0",
+    "rimraf": "^5.0.1",
+    "sass": "^1.63.6",
+    "semver": "^7.3.8"
+  }
+}

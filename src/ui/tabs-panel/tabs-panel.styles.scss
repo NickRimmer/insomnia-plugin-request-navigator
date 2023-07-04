@@ -1,0 +1,15 @@
+#plugin-request-navigator-hub .tabs-panel {
+  display: flex;
+  justify-content: space-between;
+
+  &.hidden {
+    display: none;
+  }
+
+  .items {
+    display: flex;
+    gap: 4px;
+    padding: 1px 5px 0 6px;
+    overflow: hidden;
+  }
+}

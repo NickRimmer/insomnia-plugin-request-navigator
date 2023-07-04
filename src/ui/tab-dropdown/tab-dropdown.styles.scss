@@ -1,0 +1,61 @@
+#plugin-request-navigator-hub .tab-dropdown {
+  .button {
+    padding: 5px 11px;
+    border-radius: 3px 3px 0 0;
+    cursor: pointer;
+    border: 1px solid transparent;
+    border-bottom: none;
+    color: var(--hl);
+
+    &:hover {
+      background-color: var(--hl-xs);
+    }
+  }
+
+  ul {
+    position: absolute;
+    z-index: 1;
+    right: 0;
+    background-color: var(--color-bg);
+    margin-top: 2px;
+
+    li {
+      color: var(--hl);
+      padding: 9px 34px;
+      background-color: var(--hl-xxs);
+      border-bottom: solid 1px var(--hl-xs);
+      cursor: pointer;
+
+      .btn-close {
+        position: absolute;
+        color: var(--hl);
+        top: 0;
+        bottom: 0;
+        right: 0;
+        padding: 0 9px 0 8px;
+        display: flex;
+        align-items: center;
+        padding-top: 1px;
+        opacity: 0;
+        transition: color 0.1s ease-in-out, opacity 0.1s ease-in-out;
+
+        &:hover {
+          color: var(--color-font);
+          background-color: var(--hl-xs);
+        }
+      }
+
+      &:hover {
+        .btn-close {
+          opacity: 1;
+        }
+      }
+
+      &:hover,
+      &.active {
+        background-color: var(--hl-xs);
+        color: var(--color-font);
+      }
+    }
+  }
+}

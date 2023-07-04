@@ -1,0 +1,53 @@
+#plugin-request-navigator-hub .tab-button {
+  position: relative;
+  color: var(--hl);
+  padding: 4px 25px 6px;
+  background-color: var(--hl-xs);
+  border-radius: 3px 3px 0 0;
+  cursor: pointer;
+  border: 1px solid transparent;
+  border-bottom: none;
+  transition: color 0.1s ease-in-out;
+  max-width: 150px;
+
+  .title {
+    transition: margin-left 0.05s ease-in-out, margin-right 0.05s ease-in-out;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  .btn-close {
+    position: absolute;
+    color: var(--hl);
+    opacity: 0;
+    top: 0;
+    bottom: 0;
+    right: 0;
+    padding: 0 6px 0 5px;
+    display: flex;
+    align-items: center;
+    padding-top: 1px;
+    transition: color 0.1s ease-in-out, opacity 0.1s ease-in-out;
+
+    &:hover {
+      color: var(--color-font);
+      background-color: var(--hl-xs);
+    }
+  }
+
+  &.active,
+  &:hover {
+    color: var(--color-font);
+  }
+
+  &.active {
+    border: 1px solid var(--hl-md);
+    border-bottom: none;
+  }
+
+  &:hover {
+    .btn-close {
+      opacity: 1;
+    }
+  }
+}

@@ -1,8 +1,6 @@
 ﻿If you like this plugin, [leave it a :star: on Github!](https://github.com/NickRimmer/insomnia-plugin-request-navigator)
 
 # About
-<img src="npm/content/request-navigator-icon-medium.jpg" alt="Just a mate" width="200" height="200">
-
 TBD
 
 ## How to use

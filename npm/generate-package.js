@@ -3,7 +3,7 @@
 
 'use strict'
 
-const npmPackageName = 'insomnia-plugin-tabs'
+const npmPackageName = 'insomnia-plugin-request-navigator'
 
 async function executeAsync() {
   const fs = require('fs')
@@ -17,7 +17,7 @@ async function executeAsync() {
   // read version from remote
   const getCurrentVersionAsync = async () => new Promise((resolve, reject) => {
     // use it for the first lunch as the packge is not published yet
-    return resolve('0.1.0')
+    // return resolve('0.1.0')
 
     // eslint-disable-next-line no-unreachable
     request(`https://registry.npmjs.org/-/package/${npmPackageName}/dist-tags`, {

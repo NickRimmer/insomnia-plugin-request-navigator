@@ -1,7 +1,7 @@
 #plugin-request-navigator-hub .tab-button {
   position: relative;
   color: var(--hl);
-  padding: 4px 25px 6px;
+  padding: 5px 25px 7px;
   background-color: var(--hl-xs);
   border-radius: 3px 3px 0 0;
   cursor: pointer;
@@ -9,6 +9,8 @@
   border-bottom: none;
   transition: color 0.1s ease-in-out;
   max-width: 150px;
+  min-width: 30px;
+  text-align: center;
 
   .title {
     transition: margin-left 0.05s ease-in-out, margin-right 0.05s ease-in-out;

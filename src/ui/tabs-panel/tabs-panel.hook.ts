@@ -3,6 +3,7 @@ import { isCurrentConnectionStillActive } from '../../services/insomnia/connecto
 import { TabData, UseTabsPanelData } from './tabs-panel.types'
 import { onRequestSelected } from '../../services/insomnia/events/request-selected'
 import { onRequestUpdated } from '../../services/insomnia/events/request-updated'
+import { onRequestDeleted } from '../../services/insomnia/events/request-deleted'
 import { onRouteChanged } from '../../services/insomnia/events/route-changed'
 import { getAllRequests } from '../../services/insomnia/connector'
 import { navigateToRequest } from '../../services/insomnia/navigator'
@@ -25,7 +26,6 @@ export const useTabsPanel = (id: string): UseTabsPanelData => {
   const [screenSize, setScreenSize] = React.useState<number>(0)
   const [collapsedTabs, setCollapsedTabs] = React.useState<TabData[]>([])
 
-  // when screen size changed
   useEffect(() => {
     const handleResize = () => {
       if (!isCurrentConnectionStillActive()) {
@@ -35,6 +35,9 @@ export const useTabsPanel = (id: string): UseTabsPanelData => {
       setScreenSize(window.innerWidth)
     }
     window.addEventListener('resize', handleResize)
+
+    // reset tabs on route change
+    onRouteChanged(() => setTabs([]))
   }, [])
 
   // when request selected - add or activate tab
@@ -57,9 +60,6 @@ export const useTabsPanel = (id: string): UseTabsPanelData => {
         setTabs([...tabDataRef.current])
       }
     })
-
-    // reset tabs on route change
-    onRouteChanged(() => setTabs([]))
   }, [])
 
   // when request renamed - renamed tab
@@ -67,7 +67,7 @@ export const useTabsPanel = (id: string): UseTabsPanelData => {
     onRequestUpdated((doc) => {
       const requestId = doc._id
       if (!requestId) {
-        console.warn('onRequestUpdated', 'unexpected doc, activeRequestId not found', doc)
+        console.warn('onRequestUpdated', 'unexpected doc, request id not found', doc)
         return
       }
 
@@ -79,9 +79,20 @@ export const useTabsPanel = (id: string): UseTabsPanelData => {
       tab.title = doc.name
       setTabs(updatedList)
     })
+  }, [])
 
-    // reset tabs on route change
-    onRouteChanged(() => setTabs([]))
+  // when request removed - remove tab
+  useEffect(() => {
+    onRequestDeleted((doc) => {
+      const requestId = doc._id
+      if (!requestId) {
+        console.warn('onRequestUpdated', 'unexpected doc, request id not found', doc)
+        return
+      }
+
+      const updatedList = [...tabDataRef.current].filter(tab => tab.requestId != requestId)
+      setTabs(updatedList)
+    })
   }, [])
 
   // when tabs changed - update reference value

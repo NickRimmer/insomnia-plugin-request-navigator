@@ -15,6 +15,8 @@ export const subscibeForEvents = (channelName: string, callback: (data: any) => 
 
 export const subscibeForDbChangeEvents = (callback: (data: DocBaseModel, method: string) => void): void => {
   subscibeForEvents('db.changes', (changes: any[][]) => changes.forEach((data) => {
+    // console.log('[plugin-navigator]', 'db.changes', data)
+
     if (data.length != 3) {
       console.warn('[plugin-navigator]', 'unexpected data recevied in db.changes channel', data)
       return

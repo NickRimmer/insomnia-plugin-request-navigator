@@ -128,7 +128,7 @@ export const useTabsPanel = (id: string): UseTabsPanelData => {
     setCollapsedTabs(tabsToCollapse)
   }, [tabs, screenSize])
 
-  const onTabClick = (requestId: string): void => {
+  const onTabClicked = (requestId: string): void => {
     const tabData = tabs.find(tab => tab.requestId == requestId)
     if (!tabData) {
       console.warn('tab not found', requestId)
@@ -141,7 +141,7 @@ export const useTabsPanel = (id: string): UseTabsPanelData => {
     showTab(tabData.requestId)
   }
 
-  const onCloseClick = (requestId: string): void => {
+  const onCloseClicked = (requestId: string): void => {
     const tabData = tabs.find(tab => tab.requestId == requestId)
     if (!tabData) {
       console.warn('tab not found', requestId)
@@ -161,6 +161,13 @@ export const useTabsPanel = (id: string): UseTabsPanelData => {
     setTabs(updated)
   }
 
+  const onSortEnd = ({ oldIndex, newIndex }: { oldIndex: number, newIndex: number }): void => {
+    // move tab from old index to new index
+    const element = tabs.splice(oldIndex, 1)[0]
+    tabs.splice(newIndex, 0, element)
+    setTabs([...tabs])
+  }
+
   const showTab = (requestId: string): void => {
     const tabData = tabs.find(tab => tab.requestId == requestId)
     if (!tabData) {
@@ -178,7 +185,8 @@ export const useTabsPanel = (id: string): UseTabsPanelData => {
   return {
     tabs,
     collapsedTabs,
-    onTabClick,
-    onCloseClick,
+    onTabClicked,
+    onCloseClicked,
+    onSortEnd,
   }
 }

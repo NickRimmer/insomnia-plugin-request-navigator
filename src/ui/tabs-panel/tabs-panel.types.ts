@@ -1,3 +1,5 @@
+import { SortEndHandler } from 'react-sortable-hoc'
+
 export type TabData = {
   requestId: string;
   title: string;
@@ -7,6 +9,7 @@ export type TabData = {
 export type UseTabsPanelData = {
   tabs: TabData[];
   collapsedTabs: TabData[];
-  onTabClick: (requestId: string) => void;
-  onCloseClick: (requestId: string) => void;
+  onTabClicked: (requestId: string) => void;
+  onCloseClicked: (requestId: string) => void;
+  onSortEnd: SortEndHandler;
 }

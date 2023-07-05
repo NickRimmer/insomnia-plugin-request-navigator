@@ -1,4 +1,4 @@
-#plugin-request-navigator-hub .tab-button {
+.plugin-request-navigator-tab-button {
   position: relative;
   color: var(--hl);
   padding: 5px 25px 7px;
@@ -7,10 +7,10 @@
   cursor: pointer;
   border: 1px solid transparent;
   border-bottom: none;
-  transition: color 0.1s ease-in-out;
   max-width: 150px;
   min-width: 30px;
   text-align: center;
+  white-space: nowrap;
 
   .title {
     transition: margin-left 0.05s ease-in-out, margin-right 0.05s ease-in-out;
@@ -52,4 +52,8 @@
       opacity: 1;
     }
   }
+}
+
+#plugin-request-navigator-hub .plugin-request-navigator-tab-button {
+  transition: color 0.1s ease-in-out, transform 0.2s ease-in-out;
 }

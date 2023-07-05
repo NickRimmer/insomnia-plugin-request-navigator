@@ -11,7 +11,7 @@ export const TabButton: FC<TabButtonProps> = ({ children, isActive, onClickButto
 
   return (
     <div
-      className={`tab-button ${isActive ? 'active' : ''}`}
+      className={`plugin-request-navigator-tab-button ${isActive ? 'active' : ''}`}
       onClick={onClickButtonInternal}
       data-request-id={requestId}
       data-title={title}

@@ -16,6 +16,11 @@ export const TabButton: FC<TabButtonProps> = ({ children, isActive, onClickButto
       data-request-id={requestId}
       data-title={title}
     >
+      {/* <div className='context-menu'>
+        <div>Menu 1</div>
+        <div>Menu 2</div>
+        <div>Menu 3</div>
+      </div> */}
       <div className='btn-close' onClick={onClickCloseInternal}><i className='fa-solid fa-xmark'></i></div>
       <div className='title'>{children}</div>
     </div>

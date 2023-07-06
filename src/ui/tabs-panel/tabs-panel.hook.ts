@@ -105,15 +105,19 @@ export const useTabsPanel = (id: string): UseTabsPanelData => {
     const root = document.getElementById(id)
     const parent = root?.querySelector('.items')
     if (!parent) {
-      console.error('[plugin-navigator]', `parent with id '${id}' not found`)
       return
     }
 
-    const children = parent?.querySelectorAll('.tab-button')
-    if (!children) return
+    const children = parent.querySelectorAll('.plugin-request-navigator-tab-button')
+    if (!children?.length) {
+      return
+    }
 
     const parentRightBound = parent.getBoundingClientRect().right
-    if (!parentRightBound) return
+    if (!parentRightBound) {
+      console.error('[plugin-navigator]', 'parent has no right bound')
+      return
+    }
 
     const tabsToCollapse: TabData[] = []
     children.forEach((element) => {

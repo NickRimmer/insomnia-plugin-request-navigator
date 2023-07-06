@@ -4,7 +4,7 @@
 
 Playing hide-and-seek with requests in the Insomnia? It's high time to level-up your game with the 'Request Navigator' plugin! It turns your open requests into tabs faster than a magician pulls rabbits out of a hat. Switching between them is now as simple as hopping from one sitcom episode to another on a lazy Sunday. Fancy some control? Sort or close the tabs as you please - this plugin listens to you better than your pet. It's all about bringing the fun back into your workflow, and making handling multiple requests feel like a walk in the park.
 
-<img src='npm/content/demo-1.jpg'>
+<img src="npm/content/demo-1.jpg" alt="Request Navigator">
 
 # How to contribute
 

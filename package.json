@@ -4,9 +4,9 @@
   "private": true,
   "insomnia": {
     "name": "request-navigator",
-    "displayName": "Requests Navigator",
+    "displayName": "Tabs: Requests Navigator",
     "description": "Lost in Requests? Let's Navigate!",
-    "unlisted": true,
+    "unlisted": false,
     "images": {
       "icon": "request-navigator-icon-sm.png"
     },
@@ -48,6 +48,7 @@
   "dependencies": {
     "@types/react": "^16.14.5",
     "@types/react-dom": "^16.9.12",
+    "prop-types": "^15.5.7",
     "react": "^17.0.2",
     "react-dom": "^17.0.2",
     "react-sortable-hoc": "^2.0.0"

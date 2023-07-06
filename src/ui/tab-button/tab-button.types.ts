@@ -5,6 +5,8 @@ export type TabButtonProps = {
   onClickButton?: MouseEventHandler | undefined,
   onClickClose?: MouseEventHandler | undefined,
   isActive?: boolean,
+  isHidden?: boolean,
   requestId: string,
   title: string,
+  method: string,
 }

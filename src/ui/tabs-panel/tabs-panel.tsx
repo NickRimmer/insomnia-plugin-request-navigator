@@ -19,6 +19,7 @@ export const TabsPanel: FC = () => {
   const SortableItem = SortableElement(({ tab }: { tab: TabData }) => <TabButton
     onClickButton={() => onTabClicked(tab.requestId)}
     onClickClose={() => onCloseClicked(tab.requestId)}
+    isHidden={collapsedTabs.findIndex(x => x.requestId === tab.requestId) !== -1 ? true : false}
     {...tab}
   >{tab.title}</TabButton>)
 

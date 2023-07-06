@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { useEffect, useRef, useState } from 'react'
 import { isCurrentConnectionStillActive } from '../../services/insomnia/connector/refs-common'
 import { TabData, UseTabsPanelData } from './tabs-panel.types'
@@ -26,6 +27,7 @@ export const useTabsPanel = (id: string): UseTabsPanelData => {
   const [screenSize, setScreenSize] = React.useState<number>(0)
   const [collapsedTabs, setCollapsedTabs] = React.useState<TabData[]>([])
 
+  // initialize tabs
   useEffect(() => {
     const handleResize = () => {
       if (!isCurrentConnectionStillActive()) {
@@ -43,7 +45,6 @@ export const useTabsPanel = (id: string): UseTabsPanelData => {
   // when request selected - add or activate tab
   useEffect(() => {
     onRequestSelected((doc) => {
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
       const requestId = (doc as any).activeRequestId
       if (!requestId) {
         console.warn('onRequestSelected', 'unexpected doc, activeRequestId not found', doc)
@@ -52,7 +53,7 @@ export const useTabsPanel = (id: string): UseTabsPanelData => {
 
       if (!tabDataRef.current.find(tab => tab.requestId == requestId)) {
         const requestInfo = getAllRequests()[requestId]
-        const tabData = { isActive: true, requestId, title: requestInfo.name }
+        const tabData = { isActive: true, requestId, title: requestInfo.name, method: (requestInfo as any).method }
         tabDataRef.current.forEach((x) => x.isActive = false)
         setTabs([...tabDataRef.current, tabData])
       } else {
@@ -105,23 +106,24 @@ export const useTabsPanel = (id: string): UseTabsPanelData => {
     const root = document.getElementById(id)
     const parent = root?.querySelector('.items')
     if (!parent) {
-      console.error('[plugin-navigator]', `parent with id '${id}' not found`)
       return
     }
 
-    const children = parent?.querySelectorAll('.tab-button')
-    if (!children) return
+    const children = parent.querySelectorAll('.plugin-request-navigator-tab-button')
+    if (!children?.length) {
+      return
+    }
 
     const parentRightBound = parent.getBoundingClientRect().right
-    if (!parentRightBound) return
+    if (!parentRightBound) {
+      console.error('[plugin-navigator]', 'parent has no right bound')
+      return
+    }
 
     const tabsToCollapse: TabData[] = []
     children.forEach((element) => {
       if (element.getBoundingClientRect().right > parentRightBound) {
-        element.classList.add('hidden')
         tabsToCollapse.push({ title: element.getAttribute('data-title'), requestId: element.getAttribute('data-request-id'), isActive: element.classList.contains('active') } as TabData)
-      } else {
-        element.classList.remove('hidden')
       }
     })
 

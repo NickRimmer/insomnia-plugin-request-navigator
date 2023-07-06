@@ -7,6 +7,10 @@
     border-bottom: none;
     color: var(--hl);
 
+    .counter {
+      margin-right: 5px;
+    }
+
     &:hover {
       background-color: var(--hl-xs);
     }
@@ -17,7 +21,7 @@
     z-index: 1;
     right: 0;
     background-color: var(--color-bg);
-    margin-top: 2px;
+    margin-top: 4px;
 
     li {
       color: var(--hl);

@@ -1,13 +1,13 @@
 .plugin-request-navigator-tab-button {
   position: relative;
   color: var(--hl);
-  padding: 5px 25px 7px;
+  padding: 5px 15px 7px;
   background-color: var(--hl-xs);
   border-radius: 3px 3px 0 0;
   cursor: pointer;
   border: 1px solid transparent;
   border-bottom: none;
-  max-width: 150px;
+  max-width: 200px;
   // min-width: 30px;
   text-align: center;
   white-space: nowrap;
@@ -16,6 +16,32 @@
     transition: margin-left 0.05s ease-in-out, margin-right 0.05s ease-in-out;
     overflow: hidden;
     text-overflow: ellipsis;
+  }
+
+  .method {
+    opacity: 0.6;
+    color: var(--color-info);
+    margin-right: 5px;
+
+    &.get {
+      color: var(--color-surprise);
+    }
+
+    &.post {
+      color: var(--color-success);
+    }
+
+    &.put {
+      color: var(--color-warning);
+    }
+
+    &.patch {
+      color: var(--color-notice);
+    }
+
+    &.delete {
+      color: var(--color-danger);
+    }
   }
 
   .btn-close {
@@ -40,6 +66,10 @@
   &.active,
   &:hover {
     color: var(--color-font);
+
+    .method {
+      opacity: 1;
+    }
   }
 
   &.active {
@@ -50,6 +80,17 @@
   &:hover {
     .btn-close {
       opacity: 1;
+    }
+  }
+
+  &.hidden {
+    visibility: visible;
+    pointer-events: none;
+    opacity: 0.5;
+    border: none;
+
+    .title {
+      opacity: 0;
     }
   }
 }

@@ -41,6 +41,7 @@ export const TabDropdown: FC<TabDropdownProps> = ({ tabs, onMenuClicked, onClose
   return (
     <div className={`tab-dropdown ${tabs.length ? '' : 'hidden'}`} id={id}>
       <div className='button' onClick={switchMenuVisibility}>
+        {tabs.length > 1 && (<span className='counter'>{tabs.length}</span>)}
         <i className='fa-solid fa-ellipsis-vertical'></i>
       </div>
       <ul className={listClass}>

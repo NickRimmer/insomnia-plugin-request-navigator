@@ -11,5 +11,26 @@
     gap: 4px;
     padding: 1px 5px 0 6px;
     overflow: hidden;
+
+    ul.context-menu {
+      position: absolute;
+      z-index: 20;
+      background-color: var(--color-bg);
+
+      li {
+        color: var(--hl);
+        padding: 8px 22px;
+        background-color: var(--hl-xxs);
+        border-bottom: solid 1px var(--hl-xs);
+        cursor: pointer;
+        position: relative;
+
+        &:hover,
+        &.active {
+          background-color: var(--hl-xs);
+          color: var(--color-font);
+        }
+      }
+    }
   }
 }

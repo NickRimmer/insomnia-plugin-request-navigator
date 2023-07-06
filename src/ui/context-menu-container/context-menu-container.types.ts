@@ -1,7 +1,6 @@
 export type ContextMenuProps = {
   children: React.ReactElement;
   menu: React.ReactNode;
-  contextMenuRef: React.MutableRefObject<ContextMenuRef | null>;
 }
 
 export type ContextMenuRef = {

@@ -1,8 +1,7 @@
 import React, { FC } from 'react'
 import { TabButtonProps } from './tab-button.types'
 import './tab-button.styles.scss'
-import { ContextMenu } from '../context-menu/context-menu'
-import { ContextMenuRef } from '../context-menu/context-menu.types'
+import { ContextMenuContainer, ContextMenuRef } from '../context-menu-container'
 
 export const TabButton: FC<TabButtonProps> = ({ children, isActive, onClickButton, onClickClose, requestId, title, method, isHidden }) => {
   const contextMenuRef = React.useRef<ContextMenuRef | null>(null)
@@ -13,8 +12,8 @@ export const TabButton: FC<TabButtonProps> = ({ children, isActive, onClickButto
   }
 
   return (
-    <ContextMenu
-      contextMenuRef={contextMenuRef}
+    <ContextMenuContainer
+      ref={contextMenuRef}
       menu={
         <ul className='context-menu'>
           <li onClick={() => contextMenuRef.current?.closeMenu()}>Close tab</li>
@@ -34,6 +33,6 @@ export const TabButton: FC<TabButtonProps> = ({ children, isActive, onClickButto
           <span>{children}</span>
         </div>
       </div>
-    </ContextMenu>
+    </ContextMenuContainer>
   )
 }

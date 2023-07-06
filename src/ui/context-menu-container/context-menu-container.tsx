@@ -1,7 +1,7 @@
-import React, { FC, useEffect } from 'react'
-import { ContextMenuProps, ContextMenuState } from './context-menu.types'
+import React, { ForwardRefRenderFunction, forwardRef, useEffect, useImperativeHandle } from 'react'
+import { ContextMenuProps, ContextMenuRef, ContextMenuState } from './context-menu-container.types'
 
-export const ContextMenu: FC<ContextMenuProps> = ({ children, menu, contextMenuRef }) => {
+const ContextMenuContainerInternal: ForwardRefRenderFunction<ContextMenuRef, ContextMenuProps> = ({ children, menu }, ref) => {
   const [state, setState] = React.useState<ContextMenuState>({
     isOpen: false,
     x: 0,
@@ -12,17 +12,17 @@ export const ContextMenu: FC<ContextMenuProps> = ({ children, menu, contextMenuR
   const internalRef = React.useRef<HTMLDivElement | null>(null)
 
   useEffect(() => {
-    contextMenuRef.current = {
-      closeMenu: () => setState({
-        isOpen: false,
-        x: 0,
-        y: 0,
-      })
-    }
-
     document.addEventListener('mousedown', onClickOutside)
     return () => document.removeEventListener('mousedown', onClickOutside)
   }, [])
+
+  useImperativeHandle(ref, () => ({
+    closeMenu: () => setState({
+      isOpen: false,
+      x: 0,
+      y: 0,
+    })
+  }))
 
   const onContextMenu = (x: number, y: number) => setState({
     isOpen: true,
@@ -69,3 +69,5 @@ export const ContextMenu: FC<ContextMenuProps> = ({ children, menu, contextMenuR
     </>
   )
 }
+
+export const ContextMenuContainer = forwardRef<ContextMenuRef, ContextMenuProps>(ContextMenuContainerInternal)

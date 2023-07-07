@@ -1,33 +1,31 @@
 import React, { FC } from 'react'
 import { TabButtonProps } from './tab-button.types'
 import './tab-button.styles.scss'
-import { ContextMenuContainer, ContextMenuRef } from '../context-menu-container'
+import { ContextMenuContainer } from '../context-menu-container'
+import { useTabButton } from './tab-button.hook'
 
-export const TabButton: FC<TabButtonProps> = ({ children, isActive, onClickButton, onClickClose, requestId, title, method, isHidden }) => {
-  const contextMenuRef = React.useRef<ContextMenuRef | null>(null)
-  const onClickButtonInternal = (e: React.MouseEvent<HTMLDivElement, MouseEvent>) => onClickButton ? onClickButton(e) : null
-  const onClickCloseInternal = (e: React.MouseEvent<HTMLDivElement, MouseEvent>) => {
-    e.stopPropagation()
-    if (onClickClose) onClickClose(e)
-  }
+export const TabButton: FC<TabButtonProps> = (props) => {
+  const { children, isActive, requestId, title, method, isHidden } = props
+  const { contextMenuRef, onClickButton, onClickClose, onContextCloseTab, onContextCloseOthers, onContextCloseOnRight, onContextCloseAll } = useTabButton(props)
 
   return (
     <ContextMenuContainer
       ref={contextMenuRef}
       menu={
         <ul className='context-menu'>
-          <li onClick={() => contextMenuRef.current?.closeMenu()}>Close tab</li>
-          <li>Close tabs on right</li>
-          <li>Close all other tabs</li>
+          <li onClick={onContextCloseTab}>Close tab</li>
+          <li onClick={onContextCloseOnRight}>Close on right</li>
+          <li onClick={onContextCloseOthers}>Close others</li>
+          <li onClick={onContextCloseAll}>Close all</li>
         </ul>
       }>
       <div
         className={`plugin-request-navigator-tab-button ${isActive ? 'active' : ''} ${isHidden ? 'hidden' : ''}`}
-        onClick={onClickButtonInternal}
+        onClick={onClickButton}
         data-request-id={requestId}
         data-title={title}
       >
-        <div className='btn-close' onClick={onClickCloseInternal}><i className='fa-solid fa-xmark'></i></div>
+        <div className='btn-close' onClick={onClickClose}><i className='fa-solid fa-xmark'></i></div>
         <div className='title'>
           <span className={`method ${method.toLocaleLowerCase()}`}>{method.toUpperCase()}</span>
           <span>{children}</span>

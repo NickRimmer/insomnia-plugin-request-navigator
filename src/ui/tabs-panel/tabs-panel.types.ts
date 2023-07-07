@@ -6,11 +6,3 @@ export type TabData = {
   isActive: boolean;
   method: string;
 }
-
-export type UseTabsPanelData = {
-  tabs: TabData[];
-  collapsedTabs: TabData[];
-  onTabClicked: (requestId: string) => void;
-  onCloseClicked: (requestId: string) => void;
-  onSortEnd: SortEndHandler;
-}

@@ -19,7 +19,6 @@ export const render = () => {
   root.id = 'plugin-request-navigator-hub'
   header.appendChild(root)
 
-  //TODO fix first render on application start
   ReactDOM.render(
     (<TabsPanel />),
     root

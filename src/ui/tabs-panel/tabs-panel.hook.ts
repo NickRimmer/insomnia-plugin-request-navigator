@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { useEffect, useRef, useState } from 'react'
 import { isCurrentConnectionStillActive } from '../../services/insomnia/connector/refs-common'
-import { TabData, UseTabsPanelData } from './tabs-panel.types'
+import { TabData } from './tabs-panel.types'
 import { onRequestSelected } from '../../services/insomnia/events/request-selected'
 import { onRequestUpdated } from '../../services/insomnia/events/request-updated'
 import { onRequestDeleted } from '../../services/insomnia/events/request-deleted'
@@ -9,8 +9,9 @@ import { onRouteChanged } from '../../services/insomnia/events/route-changed'
 import { getAllRequests } from '../../services/insomnia/connector'
 import { navigateToRequest } from '../../services/insomnia/navigator'
 import React from 'react'
+import { set } from 'immutable'
 
-export const useTabsPanel = (id: string): UseTabsPanelData => {
+export const useTabsPanel = (id: string)/*: UseTabsPanelData*/ => {
   const tabDataRef = useRef<TabData[]>([])
   const [tabs, setTabs] = useState<TabData[]>([
     // { title: 'Request 0', requestId: 'req_0', isActive: true },
@@ -163,6 +164,40 @@ export const useTabsPanel = (id: string): UseTabsPanelData => {
     setTabs(updated)
   }
 
+  const onCloseOthersClicked = (requestId: string): void => {
+    const tabData = tabs.find(tab => tab.requestId == requestId)
+    if (!tabData) {
+      console.error('tab not found', requestId)
+      return
+    }
+
+    tabData.isActive = true
+    const updated = tabs.filter((tab) => tab.requestId === tabData.requestId)
+    setTabs(updated)
+    showTab(tabData.requestId)
+  }
+
+  const onClickCloseOnRight = (requestId: string): void => {
+    const tabData = tabs.find(tab => tab.requestId == requestId)
+    if (!tabData) {
+      console.error('tab not found', requestId)
+      return
+    }
+
+    const closedTabIndex = tabs.findIndex((tab) => tab.requestId === tabData.requestId)
+    const updated = tabs.slice(0, closedTabIndex + 1)
+
+    const currentActive = updated.findIndex((tab) => tab.isActive)
+    if (currentActive == -1) tabData.isActive = true
+
+    setTabs(updated)
+    showTab(tabData.requestId)
+  }
+
+  const onClickCloseAll = (): void => {
+    setTabs([])
+  }
+
   const onSortEnd = ({ oldIndex, newIndex }: { oldIndex: number, newIndex: number }): void => {
     // move tab from old index to new index
     const element = tabs.splice(oldIndex, 1)[0]
@@ -189,6 +224,9 @@ export const useTabsPanel = (id: string): UseTabsPanelData => {
     collapsedTabs,
     onTabClicked,
     onCloseClicked,
+    onCloseOthersClicked,
+    onClickCloseOnRight,
+    onClickCloseAll,
     onSortEnd,
   }
 }

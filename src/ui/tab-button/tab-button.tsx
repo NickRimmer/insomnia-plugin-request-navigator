@@ -24,6 +24,7 @@ export const TabButton: FC<TabButtonProps> = (props) => {
         onClick={onClickButton}
         data-request-id={requestId}
         data-title={title}
+        data-method={method}
       >
         <div className='btn-close' onClick={onClickClose}>
           <i className='fa-solid fa-xmark'></i>

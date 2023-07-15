@@ -16,6 +16,7 @@
       position: absolute;
       z-index: 20;
       background-color: var(--color-bg);
+      border: solid 1px var(--hl-xs);
 
       li {
         color: var(--hl);
@@ -29,6 +30,10 @@
         &.active {
           background-color: var(--hl-xs);
           color: var(--color-font);
+        }
+
+        &:last-child {
+          border-bottom: none;
         }
       }
     }

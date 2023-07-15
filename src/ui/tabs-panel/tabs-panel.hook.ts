@@ -127,7 +127,12 @@ export const useTabsPanel = (id: string)/*: UseTabsPanelData*/ => {
     const tabsToCollapse: TabData[] = []
     children.forEach((element) => {
       if (element.getBoundingClientRect().right > parentRightBound) {
-        tabsToCollapse.push({ title: element.getAttribute('data-title'), requestId: element.getAttribute('data-request-id'), isActive: element.classList.contains('active') } as TabData)
+        tabsToCollapse.push({
+          method: element.getAttribute('data-method'),
+          title: element.getAttribute('data-title'),
+          requestId: element.getAttribute('data-request-id'),
+          isActive: element.classList.contains('active')
+        } as TabData)
       }
     })
 

@@ -1,6 +1,6 @@
 #plugin-request-navigator-hub .tab-dropdown {
   .button {
-    padding: 5px 11px;
+    padding: 8px 11px;
     border-radius: 3px 3px 0 0;
     cursor: pointer;
     border: 1px solid transparent;
@@ -21,15 +21,48 @@
     z-index: 1;
     right: 0;
     background-color: var(--color-bg);
-    margin-top: 4px;
+    border: solid 1px var(--hl-xs);
+    margin-top: 1px;
 
     li {
       color: var(--hl);
-      padding: 9px 34px;
+      padding: 9px 28px 9px 25px;
       background-color: var(--hl-xxs);
       border-bottom: solid 1px var(--hl-xs);
       cursor: pointer;
       position: relative;
+
+      .title {
+        .method {
+          opacity: 0.6;
+          color: var(--color-info);
+          margin-right: 5px;
+
+          &.get {
+            color: var(--color-surprise);
+          }
+
+          &.post {
+            color: var(--color-success);
+          }
+
+          &.put {
+            color: var(--color-warning);
+          }
+
+          &.patch {
+            color: var(--color-notice);
+          }
+
+          &.delete {
+            color: var(--color-danger);
+          }
+        }
+      }
+
+      &:last-child {
+        border-bottom: none;
+      }
 
       .btn-close {
         position: absolute;
@@ -42,7 +75,9 @@
         align-items: center;
         padding-top: 1px;
         opacity: 0;
-        transition: color 0.1s ease-in-out, opacity 0.1s ease-in-out;
+        transition:
+          color 0.1s ease-in-out,
+          opacity 0.1s ease-in-out;
 
         &:hover {
           color: var(--color-font);

@@ -33,7 +33,7 @@ export const TabDropdown: FC<TabDropdownProps> = ({ tabs, onMenuClicked, onClose
     onMenuClicked(tab.requestId)
   }
 
-  const onMenuItemCloseClicked = (e: MouseEvent, tab: TabData) => {
+  const onMenuItemCloseClicked = (e: React.MouseEvent<HTMLDivElement, MouseEvent>, tab: TabData) => {
     onCloseClicked(tab.requestId)
     e.stopPropagation()
   }
@@ -50,7 +50,10 @@ export const TabDropdown: FC<TabDropdownProps> = ({ tabs, onMenuClicked, onClose
           className={tab.isActive ? 'active' : ''}
           onClick={() => onMenuItemClicked(tab)}>
           <div className='btn-close' onClick={(e) => onMenuItemCloseClicked(e, tab)}><i className='fa-solid fa-xmark'></i></div>
-          <div className='title'>{tab.title}</div>
+          <div className='title'>
+            <span className={`method ${tab.method?.toLocaleLowerCase()}`}>{tab.method?.toUpperCase()}</span>
+            <span className='text'>{tab.title}</span>
+          </div>
         </li>))}
       </ul>
     </div>

@@ -35,7 +35,9 @@
     "publish": "npm run build && cd dist && npm publish",
     "publish-dry": "npm run build && cd dist && npm publish --dry-run",
     "install": "copyfiles -u 1 ./dist/* %appdata%/insomnia/plugins/insomnia-plugin-request-navigator",
-    "install-dev": "copyfiles -u 1 ./dist/* %appdata%/insomnia-app/plugins/insomnia-plugin-request-navigator"
+    "install-dev": "copyfiles -u 1 ./dist/* %appdata%/insomnia-app/plugins/insomnia-plugin-request-navigator",
+    "lint": "eslint --ext .ts,.tsx .",
+    "lint-fix": "eslint --ext .ts,.tsx --fix ."
   },
   "watch": {
     "watch-trigger": {
@@ -48,7 +50,6 @@
   "dependencies": {
     "@types/react": "^16.14.5",
     "@types/react-dom": "^16.9.12",
-    "prop-types": "^15.5.7",
     "react": "^17.0.2",
     "react-dom": "^17.0.2",
     "react-sortable-hoc": "^2.0.0"

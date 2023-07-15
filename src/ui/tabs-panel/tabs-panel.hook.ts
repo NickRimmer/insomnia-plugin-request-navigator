@@ -9,7 +9,6 @@ import { onRouteChanged } from '../../services/insomnia/events/route-changed'
 import { getAllRequests } from '../../services/insomnia/connector'
 import { navigateToRequest } from '../../services/insomnia/navigator'
 import React from 'react'
-import { set } from 'immutable'
 
 export const useTabsPanel = (id: string)/*: UseTabsPanelData*/ => {
   const tabDataRef = useRef<TabData[]>([])
@@ -54,7 +53,11 @@ export const useTabsPanel = (id: string)/*: UseTabsPanelData*/ => {
 
       if (!tabDataRef.current.find(tab => tab.requestId == requestId)) {
         const requestInfo = getAllRequests()[requestId]
-        const tabData = { isActive: true, requestId, title: requestInfo.name, method: (requestInfo as any).method }
+
+        let method = (requestInfo as any).method
+        if (!method && requestInfo._id.startsWith('greq_')) method = 'gRPC'
+
+        const tabData = { isActive: true, requestId, title: requestInfo.name, method }
         tabDataRef.current.forEach((x) => x.isActive = false)
         setTabs([...tabDataRef.current, tabData])
       } else {
@@ -124,7 +127,12 @@ export const useTabsPanel = (id: string)/*: UseTabsPanelData*/ => {
     const tabsToCollapse: TabData[] = []
     children.forEach((element) => {
       if (element.getBoundingClientRect().right > parentRightBound) {
-        tabsToCollapse.push({ title: element.getAttribute('data-title'), requestId: element.getAttribute('data-request-id'), isActive: element.classList.contains('active') } as TabData)
+        tabsToCollapse.push({
+          method: element.getAttribute('data-method'),
+          title: element.getAttribute('data-title'),
+          requestId: element.getAttribute('data-request-id'),
+          isActive: element.classList.contains('active')
+        } as TabData)
       }
     })
 

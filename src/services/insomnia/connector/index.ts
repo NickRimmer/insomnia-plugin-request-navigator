@@ -28,8 +28,8 @@ export const connect = (): boolean => {
   // connect to db changes
   subscibeForDbChangeEvents((doc, method) => {
     if (method === 'update' && doc.type === 'WorkspaceMeta') notifyRequestSelected(doc)
-    if (method === 'update' && doc.type === 'Request') notifyRequestUpdated(doc)
-    if (method === 'remove' && doc.type === 'Request') notifyRequestDeleted(doc)
+    if (method === 'update' && (doc.type === 'Request' || doc.type === 'GrpcRequest')) notifyRequestUpdated(doc)
+    if (method === 'remove' && (doc.type === 'Request' || doc.type === 'GrpcRequest')) notifyRequestDeleted(doc)
   })
 
   return true
@@ -39,7 +39,14 @@ export const connect = (): boolean => {
 let storeInternal: any = {}
 export const getStore = (): any => storeInternal
 export const getState = (): any => storeInternal.getState().entities
-export const getAllRequests = (): DocBaseModel[] => getState().requests
+export const getAllRequests = (): Record<string, DocBaseModel> => {
+  const result = {}
+
+  Object.assign(result, getState().requests)
+  Object.assign(result, getState().grpcRequests)
+
+  return result
+}
 
 // react router
 let routerInternal: any = {}

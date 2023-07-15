@@ -3,8 +3,9 @@ import * as ui from './ui'
 
 const init = () => {
   // can be used during development, to be able to access insomnia instance from console for experiments
-  // global.dev = {}
-  // global.dev.insomnia = insomnia
+  // (global as any).dev = {
+  //   insomnia
+  // }
 
   // initialize ui components
   ui.render()

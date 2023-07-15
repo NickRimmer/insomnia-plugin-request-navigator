@@ -58,8 +58,8 @@
     align-items: center;
     padding-top: 1px;
     transition:
-      color 0.1s ease-in-out,
-      opacity 0.1s ease-in-out;
+      color 0.2s ease-in-out,
+      opacity 0.2s ease-in-out 0.1s;
 
     &:before {
       $size: 8px;
@@ -74,6 +74,7 @@
     }
 
     &:hover {
+      opacity: 1;
       color: var(--color-font);
       background-color: var(--hl-xs);
 
@@ -95,13 +96,17 @@
   &.active {
     border: 1px solid var(--hl-md);
     border-bottom: none;
-  }
 
-  &:hover {
     .btn-close {
       opacity: 1;
     }
   }
+
+  // &:hover {
+  //   .btn-close {
+  //     opacity: 1;
+  //   }
+  // }
 
   &.hidden {
     visibility: visible;

@@ -54,7 +54,11 @@ export const useTabsPanel = (id: string)/*: UseTabsPanelData*/ => {
 
       if (!tabDataRef.current.find(tab => tab.requestId == requestId)) {
         const requestInfo = getAllRequests()[requestId]
-        const tabData = { isActive: true, requestId, title: requestInfo.name, method: (requestInfo as any).method }
+
+        let method = (requestInfo as any).method
+        if (!method && requestInfo._id.startsWith('greq_')) method = 'gRPC'
+
+        const tabData = { isActive: true, requestId, title: requestInfo.name, method }
         tabDataRef.current.forEach((x) => x.isActive = false)
         setTabs([...tabDataRef.current, tabData])
       } else {

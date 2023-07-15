@@ -12,7 +12,7 @@ export const navigateToRequest = (requestId: string): boolean => {
   }
 
   // to make sure we do not set not existing request as active
-  const request = state.entities.requests[requestId]
+  const request = state.entities.requests[requestId] ?? state.entities.grpcRequests[requestId]
   if (!request) {
     console.warn('[plugin-navigator]', 'request not found', requestId)
     return false

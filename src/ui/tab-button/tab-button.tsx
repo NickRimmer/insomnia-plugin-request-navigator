@@ -25,7 +25,9 @@ export const TabButton: FC<TabButtonProps> = (props) => {
         data-request-id={requestId}
         data-title={title}
       >
-        <div className='btn-close' onClick={onClickClose}><i className='fa-solid fa-xmark'></i></div>
+        <div className='btn-close' onClick={onClickClose}>
+          <i className='fa-solid fa-xmark'></i>
+        </div>
         <div className='title'>
           <span className={`method ${method.toLocaleLowerCase()}`}>{method.toUpperCase()}</span>
           <span>{children}</span>

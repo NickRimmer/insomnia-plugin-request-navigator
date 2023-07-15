@@ -12,18 +12,7 @@ import React from 'react'
 
 export const useTabsPanel = (id: string)/*: UseTabsPanelData*/ => {
   const tabDataRef = useRef<TabData[]>([])
-  const [tabs, setTabs] = useState<TabData[]>([
-    // { title: 'Request 0', requestId: 'req_0', isActive: true },
-    // { title: 'Request 1', requestId: 'req_1', isActive: false },
-    // { title: 'Request 2', requestId: 'req_2', isActive: false },
-    // { title: 'Request 3', requestId: 'req_3', isActive: false },
-    // { title: 'Request 4', requestId: 'req_4', isActive: false },
-    // { title: 'Request 5', requestId: 'req_5', isActive: false },
-    // { title: 'Request 6', requestId: 'req_6', isActive: false },
-    // { title: 'Request 7', requestId: 'req_7', isActive: false },
-    // { title: 'Request 8', requestId: 'req_8', isActive: false },
-    // { title: 'Request 9', requestId: 'req_9', isActive: false },
-  ])
+  const [tabs, setTabs] = useState<TabData[]>([])
   const [screenSize, setScreenSize] = React.useState<number>(0)
   const [collapsedTabs, setCollapsedTabs] = React.useState<TabData[]>([])
 
@@ -55,7 +44,10 @@ export const useTabsPanel = (id: string)/*: UseTabsPanelData*/ => {
         const requestInfo = getAllRequests()[requestId]
 
         let method = (requestInfo as any).method
-        if (!method && requestInfo._id.startsWith('greq_')) method = 'gRPC'
+        if (!method) {
+          if (requestInfo.type === 'GrpcRequest') method = 'gRPC'
+          else method = 'N/A'
+        }
 
         const tabData = { isActive: true, requestId, title: requestInfo.name, method }
         tabDataRef.current.forEach((x) => x.isActive = false)

@@ -9,7 +9,6 @@ import { onRouteChanged } from '../../services/insomnia/events/route-changed'
 import { getAllRequests } from '../../services/insomnia/connector'
 import { navigateToRequest } from '../../services/insomnia/navigator'
 import React from 'react'
-import { set } from 'immutable'
 
 export const useTabsPanel = (id: string)/*: UseTabsPanelData*/ => {
   const tabDataRef = useRef<TabData[]>([])

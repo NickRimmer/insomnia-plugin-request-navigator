@@ -102,12 +102,6 @@
     }
   }
 
-  // &:hover {
-  //   .btn-close {
-  //     opacity: 1;
-  //   }
-  // }
-
   &.hidden {
     visibility: visible;
     pointer-events: none;
@@ -120,9 +114,7 @@
   }
 
   &:has(.btn-close:hover) {
-    // .title {
     color: var(--hl) !important;
-    // }
   }
 }
 

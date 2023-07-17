@@ -11,5 +11,5 @@ export type TabButtonProps = {
   isHidden?: boolean,
   requestId: string,
   title: string,
-  method: string,
+  method: string | undefined,
 }

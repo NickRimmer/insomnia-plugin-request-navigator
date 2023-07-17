@@ -30,7 +30,7 @@ export const TabButton: FC<TabButtonProps> = (props) => {
           <i className='fa-solid fa-xmark'></i>
         </div>
         <div className='title'>
-          <span className={`method ${method.toLocaleLowerCase()}`}>{method.toUpperCase()}</span>
+          {method && <span className={`method ${method.toLocaleLowerCase()}`}>{method.toUpperCase()}</span>}
           <span>{children}</span>
         </div>
       </div>

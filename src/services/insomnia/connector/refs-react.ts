@@ -2,7 +2,6 @@
 import { isCurrentConnectionStillActive } from './refs-common'
 
 export type ReactRefs = {
-  //TODO add types
   store: any;
   router: any;
 }

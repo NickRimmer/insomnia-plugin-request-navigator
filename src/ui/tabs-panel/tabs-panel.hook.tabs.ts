@@ -46,7 +46,7 @@ export const useTabs = ({ tabs, setTabs }: { tabs: TabData[], setTabs: (tabs: Ta
     // navigate to request
     const navigated = navigateToRequest(requestId)
     if (!navigated) {
-      //TODO disable tab as broken
+      console.warn('Cannot navigate to request', requestId)
     }
   }
 

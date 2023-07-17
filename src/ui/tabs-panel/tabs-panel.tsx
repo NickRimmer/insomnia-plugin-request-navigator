@@ -1,4 +1,4 @@
-import React, { FC } from 'react'
+import React, { FC, useEffect } from 'react'
 import './tabs-panel.styles.scss'
 import { TabButton } from '../tab-button'
 import { useTabsPanel } from './tabs-panel.hook'
@@ -25,6 +25,13 @@ export const TabsPanel: FC = () => {
   const { onClickCloseAll, onClickCloseOnRight, onCloseOthersClicked } = useContextMenu({ tabs, setTabs, showTabContent })
 
   useRequestHandlers({ setTabs, tabDataRef })
+
+  useEffect(() => {
+    if (tabs.length > 0) {
+      const activeTab = tabs.find(x => x.isActive)
+      if (activeTab) showTabContent(activeTab.requestId)
+    }
+  }, [])
 
   const SortableItem = SortableElement(({ tab }: { tab: TabData }) => <TabButton
     onClickButton={() => onTabClicked(tab.requestId)}

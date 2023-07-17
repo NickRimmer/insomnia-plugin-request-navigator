@@ -5,6 +5,7 @@ import { onRequestSelected } from '../../services/insomnia/events/request-select
 import { onRequestUpdated } from '../../services/insomnia/events/request-updated'
 import { onRequestDeleted } from '../../services/insomnia/events/request-deleted'
 import { getAllRequests } from '../../services/insomnia/connector'
+import { getRequestMethodName } from '../../services/helpers'
 
 export const useRequestHandlers = ({ setTabs, tabDataRef }: { setTabs: (tabs: TabData[]) => void, tabDataRef: MutableRefObject<TabData[]> }) => {
   // when request selected - add or activate tab
@@ -19,12 +20,7 @@ export const useRequestHandlers = ({ setTabs, tabDataRef }: { setTabs: (tabs: Ta
       if (!tabDataRef.current.find(tab => tab.requestId == requestId)) {
         const requestInfo = getAllRequests()[requestId]
 
-        let method = (requestInfo as any).method
-        if (!method) {
-          if (requestInfo.type === 'GrpcRequest') method = 'gRPC'
-          else method = 'N/A'
-        }
-
+        const method = getRequestMethodName(requestInfo)
         const tabData = { isActive: true, requestId, title: requestInfo.name, method }
         tabDataRef.current.forEach((x) => x.isActive = false)
         setTabs([...tabDataRef.current, tabData])

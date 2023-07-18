@@ -60,6 +60,7 @@
     "@types/react-dom": "^18.0.6",
     "@typescript-eslint/eslint-plugin": "^5.60.1",
     "@typescript-eslint/parser": "^5.60.1",
+    "@types/nedb": "^1.8.13",
     "copyfiles": "^2.4.1",
     "esbuild": "^0.18.11",
     "esbuild-runner": "^2.2.2",

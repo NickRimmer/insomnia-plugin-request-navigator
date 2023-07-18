@@ -1,232 +1,84 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { useEffect, useRef, useState } from 'react'
-import { isCurrentConnectionStillActive } from '../../services/insomnia/connector/refs-common'
 import { TabData } from './tabs-panel.types'
-import { onRequestSelected } from '../../services/insomnia/events/request-selected'
-import { onRequestUpdated } from '../../services/insomnia/events/request-updated'
-import { onRequestDeleted } from '../../services/insomnia/events/request-deleted'
 import { onRouteChanged } from '../../services/insomnia/events/route-changed'
-import { getAllRequests } from '../../services/insomnia/connector'
-import { navigateToRequest } from '../../services/insomnia/navigator'
-import React from 'react'
+import { database, Workspace, WorkspaceTab } from '../../services/db'
+import { getStore, getAllRequests } from '../../services/insomnia/connector'
+import { getRequestMethodName } from '../../services/helpers'
 
-export const useTabsPanel = (id: string)/*: UseTabsPanelData*/ => {
+const debugViewRouteTemplate = /\/organization\/org_[^/]+\/project\/proj_[^/]+\/workspace\/wrk_[^/]+\/debug/gm
+
+export const useTabsPanel = () => {
   const tabDataRef = useRef<TabData[]>([])
-  const [tabs, setTabs] = useState<TabData[]>([])
-  const [screenSize, setScreenSize] = React.useState<number>(0)
-  const [collapsedTabs, setCollapsedTabs] = React.useState<TabData[]>([])
+  const [tabs, _setTabs] = useState<TabData[]>([])
 
-  // initialize tabs
+  // reset tabs on route change
   useEffect(() => {
-    const handleResize = () => {
-      if (!isCurrentConnectionStillActive()) {
-        window.removeEventListener('resize', handleResize)
-        return
-      }
-      setScreenSize(window.innerWidth)
-    }
-    window.addEventListener('resize', handleResize)
+    onRouteChanged(route => {
+      if (debugViewRouteTemplate.test(route)) {
+        const store = getStore()
+        const state = store.getState()
+        const workspaceId = state.global.activeWorkspaceId
+        database.findOne<Workspace>({ workspaceId }, (err, storeWorkspace) => {
+          if (err) {
+            // if not able to load workspace tabs
+            console.error('[plugin-navigator]', 'error loading workspace tabs', err)
+            _setTabs([])
+          } else if (!storeWorkspace || storeWorkspace.tabs.length === 0) {
+            // if no saved tabs for workspace
+            _setTabs([])
+          } else {
+            // try to restore saved tabs
+            const allRequests = getAllRequests()
+            const loadedTabs = storeWorkspace
+              .tabs // all saved tabs for workspace
+              .map(x => ({ entity: x, doc: allRequests[x.requestId] })) // try to find request by id
+              .filter(x => x.doc) // filter out not found requests
+              .map<TabData>(x => { // map to tab data
+                const method = getRequestMethodName(x.doc)
+                return ({ requestId: x.doc._id, isActive: x.entity.isActive ?? false, method, title: x.doc.name })
+              }) || [] as TabData[]
 
-    // reset tabs on route change
-    onRouteChanged(() => setTabs([]))
-  }, [])
-
-  // when request selected - add or activate tab
-  useEffect(() => {
-    onRequestSelected((doc) => {
-      const requestId = (doc as any).activeRequestId
-      if (!requestId) {
-        console.warn('onRequestSelected', 'unexpected doc, activeRequestId not found', doc)
-        return
-      }
-
-      if (!tabDataRef.current.find(tab => tab.requestId == requestId)) {
-        const requestInfo = getAllRequests()[requestId]
-
-        let method = (requestInfo as any).method
-        if (!method) {
-          if (requestInfo.type === 'GrpcRequest') method = 'gRPC'
-          else method = 'N/A'
-        }
-
-        const tabData = { isActive: true, requestId, title: requestInfo.name, method }
-        tabDataRef.current.forEach((x) => x.isActive = false)
-        setTabs([...tabDataRef.current, tabData])
-      } else {
-        tabDataRef.current.forEach((x) => x.isActive = x.requestId == requestId)
-        setTabs([...tabDataRef.current])
-      }
+            // fix active tab
+            if (loadedTabs.length > 0 && loadedTabs.filter(x => x.isActive).length === 0) loadedTabs[0].isActive = true
+            setTabs(loadedTabs)
+          }
+        })
+      } else if (tabDataRef.current.length > 0) _setTabs([])
     })
   }, [])
 
-  // when request renamed - renamed tab
-  useEffect(() => {
-    onRequestUpdated((doc) => {
-      const requestId = doc._id
-      if (!requestId) {
-        console.warn('onRequestUpdated', 'unexpected doc, request id not found', doc)
-        return
-      }
-
-      const updatedList = [...tabDataRef.current]
-      const tab = updatedList.find(tab => tab.requestId == requestId)
-      if (!tab) return
-
-      if (tab.title == doc.name) return
-      tab.title = doc.name
-      setTabs(updatedList)
-    })
-  }, [])
-
-  // when request removed - remove tab
-  useEffect(() => {
-    onRequestDeleted((doc) => {
-      const requestId = doc._id
-      if (!requestId) {
-        console.warn('onRequestUpdated', 'unexpected doc, request id not found', doc)
-        return
-      }
-
-      const updatedList = [...tabDataRef.current].filter(tab => tab.requestId != requestId)
-      setTabs(updatedList)
-    })
-  }, [])
-
-  // when tabs changed - update reference value
   useEffect(() => {
     tabDataRef.current = tabs
   }, [tabs])
 
-  // when tabs changed or screen size updated - update dropdown view
-  useEffect(() => {
-    const root = document.getElementById(id)
-    const parent = root?.querySelector('.items')
-    if (!parent) {
-      return
+  const setTabs = (tabs: TabData[]) => {
+    const store = getStore()
+    const state = store.getState()
+    const workspaceId = state.global.activeWorkspaceId
+
+    const workspaceTabs: Workspace = {
+      workspaceId,
+      tabs: tabs.map((tab, index) => {
+        const workspaceTab: WorkspaceTab = {
+          requestId: tab.requestId,
+          index: index,
+          isActive: tab.isActive,
+        }
+        return workspaceTab
+      }),
     }
 
-    const children = parent.querySelectorAll('.plugin-request-navigator-tab-button')
-    if (!children?.length) {
-      return
-    }
-
-    const parentRightBound = parent.getBoundingClientRect().right
-    if (!parentRightBound) {
-      console.error('[plugin-navigator]', 'parent has no right bound')
-      return
-    }
-
-    const tabsToCollapse: TabData[] = []
-    children.forEach((element) => {
-      if (element.getBoundingClientRect().right > parentRightBound) {
-        tabsToCollapse.push({
-          method: element.getAttribute('data-method'),
-          title: element.getAttribute('data-title'),
-          requestId: element.getAttribute('data-request-id'),
-          isActive: element.classList.contains('active')
-        } as TabData)
-      }
+    database.update<Workspace>({ workspaceId }, workspaceTabs, { upsert: true }, (err) => {
+      if (err) console.error('[plugin-navigator]', 'error saving workspace tabs', err)
     })
 
-    setCollapsedTabs(tabsToCollapse)
-  }, [tabs, screenSize])
-
-  const onTabClicked = (requestId: string): void => {
-    const tabData = tabs.find(tab => tab.requestId == requestId)
-    if (!tabData) {
-      console.warn('tab not found', requestId)
-      return
-    }
-
-    if (tabData.isActive) return
-    tabs.forEach((x) => x.isActive = x === tabData)
-    setTabs([...tabs])
-    showTab(tabData.requestId)
-  }
-
-  const onCloseClicked = (requestId: string): void => {
-    const tabData = tabs.find(tab => tab.requestId == requestId)
-    if (!tabData) {
-      console.warn('tab not found', requestId)
-      return
-    }
-
-    const updated = tabs.filter((tab) => tab.requestId !== tabData.requestId)
-    if (tabData.isActive && updated.length) {
-      const closedTabIndex = tabs.findIndex((tab) => tab.requestId === tabData.requestId)
-
-      // set next tab as active
-      const activeTabIndex = Math.min(updated.length - 1, closedTabIndex)
-      updated[activeTabIndex].isActive = true
-      showTab(updated[activeTabIndex].requestId)
-    }
-
-    setTabs(updated)
-  }
-
-  const onCloseOthersClicked = (requestId: string): void => {
-    const tabData = tabs.find(tab => tab.requestId == requestId)
-    if (!tabData) {
-      console.error('tab not found', requestId)
-      return
-    }
-
-    tabData.isActive = true
-    const updated = tabs.filter((tab) => tab.requestId === tabData.requestId)
-    setTabs(updated)
-    showTab(tabData.requestId)
-  }
-
-  const onClickCloseOnRight = (requestId: string): void => {
-    const tabData = tabs.find(tab => tab.requestId == requestId)
-    if (!tabData) {
-      console.error('tab not found', requestId)
-      return
-    }
-
-    const closedTabIndex = tabs.findIndex((tab) => tab.requestId === tabData.requestId)
-    const updated = tabs.slice(0, closedTabIndex + 1)
-
-    const currentActive = updated.findIndex((tab) => tab.isActive)
-    if (currentActive == -1) tabData.isActive = true
-
-    setTabs(updated)
-    showTab(tabData.requestId)
-  }
-
-  const onClickCloseAll = (): void => {
-    setTabs([])
-  }
-
-  const onSortEnd = ({ oldIndex, newIndex }: { oldIndex: number, newIndex: number }): void => {
-    // move tab from old index to new index
-    const element = tabs.splice(oldIndex, 1)[0]
-    tabs.splice(newIndex, 0, element)
-    setTabs([...tabs])
-  }
-
-  const showTab = (requestId: string): void => {
-    const tabData = tabs.find(tab => tab.requestId == requestId)
-    if (!tabData) {
-      console.warn('tab not found', requestId)
-      return
-    }
-
-    // navigate to request
-    const navigated = navigateToRequest(requestId)
-    if (!navigated) {
-      //TODO disable tab as broken
-    }
+    _setTabs(tabs)
   }
 
   return {
     tabs,
-    collapsedTabs,
-    onTabClicked,
-    onCloseClicked,
-    onCloseOthersClicked,
-    onClickCloseOnRight,
-    onClickCloseAll,
-    onSortEnd,
+    setTabs,
+    tabDataRef,
   }
 }

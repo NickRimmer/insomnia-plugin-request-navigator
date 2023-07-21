@@ -15,7 +15,7 @@ export const getReactRefs = (): ReactRefs | null => {
 
   const containerElement = Object.getOwnPropertyNames(rootElement).findLast(x => x.startsWith('__reactContainer'))
   if (!containerElement) {
-    console.error('[plugin-navigator]', 'store container element not found')
+    console.warn('[plugin-navigator]', 'store container element not found')
     return null
   }
 

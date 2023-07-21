@@ -3,13 +3,8 @@ import * as ui from './ui'
 import { cleanupWorkspacesAsync } from './services/db'
 
 const initAsync = async () => {
-  // can be used during development, to be able to access insomnia instance from console for experiments
-  // (global as any).dev = {
-  //   insomnia
-  // }
-
   // initialize ui components
-  ui.render()
+  await ui.renderAsync()
   await cleanupWorkspacesAsync()
   console.log('[plugin-navigator]', 'initialized')
 }

@@ -13,13 +13,12 @@ export const useRequestHandlers = ({ setTabs, tabDataRef }: { setTabs: (tabs: Ta
     onRequestSelected((doc) => {
       const requestId = (doc as any).activeRequestId
       if (!requestId) {
-        console.warn('onRequestSelected', 'unexpected doc, activeRequestId not found', doc)
+        console.warn('[plugin-navigator]', 'onRequestSelected', 'unexpected doc, activeRequestId not found', doc)
         return
       }
 
       if (!tabDataRef.current.find(tab => tab.requestId == requestId)) {
         const requestInfo = getAllRequests()[requestId]
-
         const method = getRequestMethodName(requestInfo)
         const tabData = { isActive: true, requestId, title: requestInfo.name, method }
         tabDataRef.current.forEach((x) => x.isActive = false)

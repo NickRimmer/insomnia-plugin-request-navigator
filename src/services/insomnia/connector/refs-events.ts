@@ -2,7 +2,7 @@
 import { DocBaseModel } from '../types'
 import { isCurrentConnectionStillActive } from './refs-common'
 
-export const subscibeForEvents = (channelName: string, callback: (data: any) => void): void => {
+export const subscribeForEvents = (channelName: string, callback: (data: any) => void): void => {
   const unsubscribeMethod = (window as any).main.on(channelName, (_: never, data: any) => {
     if (!isCurrentConnectionStillActive()) {
       unsubscribeMethod()
@@ -14,7 +14,7 @@ export const subscibeForEvents = (channelName: string, callback: (data: any) => 
 }
 
 export const subscibeForDbChangeEvents = (callback: (data: DocBaseModel, method: string) => void): void => {
-  subscibeForEvents('db.changes', (changes: any[][]) => changes.forEach((data) => {
+  subscribeForEvents('db.changes', (changes: any[][]) => changes.forEach((data) => {
     // console.log('[plugin-navigator]', 'db.changes', data)
 
     if (data.length != 3) {

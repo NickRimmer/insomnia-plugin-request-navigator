@@ -2,7 +2,7 @@
 import { isCurrentConnectionStillActive } from './refs-common'
 
 export type ReactRefs = {
-  store: any;
+  state: any;
   router: any;
 }
 
@@ -19,9 +19,20 @@ export const getReactRefs = (): ReactRefs | null => {
     return null
   }
 
+  const state = rootElement[containerElement].memoizedState.element.props.router.state.loaderData
+  // state.global.activeWorkspaceId
+  Object.assign(state, { global: { activeWorkspaceId: state[':workspaceId'].activeWorkspace._id } })
+  Object.assign(state, {
+    entities: {
+      requests: state[':workspaceId'].collection,
+      grpcRequests: state[':workspaceId'].grpcRequests,
+      workspaceMeta: state[':workspaceId'].activeWorkspaceMeta,
+    }
+  })
+
   return {
-    store: rootElement[containerElement].memoizedState.element.props.store,
-    router: rootElement[containerElement].memoizedState.element.props.children.props.router
+    state: rootElement[containerElement].memoizedState.element.props.router.state.loaderData,
+    router: rootElement[containerElement].memoizedState.element.props.router
   }
 }
 

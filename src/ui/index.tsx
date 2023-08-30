@@ -5,7 +5,7 @@ import './index.styles.scss'
 
 export const renderAsync = (): Promise<void> => new Promise((resolve, reject) => {
   // find app header
-  const header: HTMLElement | null = document.querySelector('.app-header')
+  const header: HTMLElement | null = document.querySelector('.\\[grid-area\\:Header\\]')
   if (!header) {
     reject(new Error('App header not found'))
     return

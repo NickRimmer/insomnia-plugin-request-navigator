@@ -19,8 +19,11 @@ export const connect = (): boolean => {
     return false
   }
 
-  storeInternal = reactRefs.store
+  stateInternal = reactRefs.state
   routerInternal = reactRefs.router
+
+  window.dev = { ...window.dev, stateInternal }
+  window.dev = { ...window.dev, routerInternal }
 
   // connect to router
   subscribeForRoutePushed(routerInternal, (path: string) => notifyRouteChanged(path))
@@ -36,14 +39,17 @@ export const connect = (): boolean => {
 }
 
 // react store
-let storeInternal: any = {}
-export const getStore = (): any => storeInternal
-export const getState = (): any => storeInternal.getState().entities
+let stateInternal: any = {}
+export const getState = (): any => stateInternal
 export const getAllRequests = (): Record<string, DocBaseModel> => {
-  const result = {}
+  const requests = []
+  const workspaceData = getState()[':workspaceId']
 
-  Object.assign(result, getState().requests)
-  Object.assign(result, getState().grpcRequests)
+  requests.push(...workspaceData.collection.map((x: { doc: any }) => x.doc).filter((x: { type: string }) => x.type === 'Request'))
+  requests.push(...workspaceData.grpcRequests)
+
+  const result: Record<string, DocBaseModel> = {}
+  requests.forEach((x) => result[x._id] = x)
 
   return result
 }

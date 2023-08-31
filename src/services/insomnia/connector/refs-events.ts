@@ -19,7 +19,7 @@ export const initEvents = (): void => {
       notifyDebugPageOpenChanged(true)
       const requestId = extractRequestId(path)
       if (!requestId) {
-        console.warn('[plugin-navigator]', 'cannot extract request id from router path', requestId)
+        console.warn('[plugin-navigator]', 'cannot extract request id from router path', path)
         return
       }
 
@@ -69,4 +69,4 @@ const subscribeForChannelEvents = (channelName: string, callback: (data: any) =>
 }
 
 const isRouteDebugView = (route: string) => /\/organization\/org_[^/]+\/project\/proj_[^/]+\/workspace\/wrk_[^/]+\/debug/.test(route)
-const extractRequestId = (route: string) => route.match(/\/(req_[0-9a-z]+)$/)?.[1]
+const extractRequestId = (route: string) => route.match(/\/((req_|greq_)[0-9a-z]+)$/)?.[1]

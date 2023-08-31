@@ -1,20 +1,18 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import { DocBaseModel } from '../types'
+import { InsomniaDocBase } from '../types'
 
 let lastValue = ''
-type Listener = (doc: DocBaseModel) => void
+type Listener = (doc: InsomniaDocBase) => void
 const listeners = new Set<Listener>()
 
-export const notifyRequestSelected = (doc: DocBaseModel) => {
-  const activeRequestId = (doc as any).activeRequestId
-  if (!activeRequestId) return
-
+export const notifyRequestSelected = (doc: InsomniaDocBase) => {
+  const activeRequestId = doc._id
   if (activeRequestId === lastValue) {
     return
   }
 
-  listeners.forEach((listener) => listener(doc))
   lastValue = doc._id
+  listeners.forEach((listener) => listener(doc))
 }
 
 export const onRequestSelected = (listener: Listener): (() => void) => {

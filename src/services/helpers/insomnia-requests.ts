@@ -1,6 +1,6 @@
-import { DocBaseModel } from '../insomnia/types'
+import { InsomniaDocBase } from '../insomnia/types'
 
-export const getRequestMethodName = (requestInfo: DocBaseModel) => {
+export const getRequestMethodName = (requestInfo: InsomniaDocBase) => {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   let method = (requestInfo as any).method
   if (!method) {

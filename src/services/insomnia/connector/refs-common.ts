@@ -1,7 +1,5 @@
 let currentInsomniaConnectionId: string | null = null
 
-// export const getCurrentInsomniaConnectionId = (): string | null => currentInsomniaConnectionId
-
 export const initConnection = (): void => {
   currentInsomniaConnectionId = Math.random().toString(36).substring(2)
   localStorage.setItem('insomniaConnectionId', currentInsomniaConnectionId)

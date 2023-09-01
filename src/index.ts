@@ -1,6 +1,6 @@
 import * as insomnia from './services/insomnia/connector'
 import * as ui from './ui'
-import { cleanupWorkspacesAsync } from './services/db'
+import { database } from './services/db'
 import { getRouter } from './services/insomnia/connector/refs-router'
 
 const initAsync = async () => {
@@ -10,6 +10,7 @@ const initAsync = async () => {
 
   window.dev = {
     router: getRouter(),
+    database: database,
   }
 
   console.log('[plugin-navigator]', 'initialized')

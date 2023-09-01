@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import { DocBaseModel } from '../types'
+import { InsomniaDocBase } from '../types'
 
-type Listener = (doc: DocBaseModel) => void
+type Listener = (doc: InsomniaDocBase) => void
 const listeners = new Set<Listener>()
 
 export const notifyRequestDeleted = (doc: any) => {

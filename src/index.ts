@@ -1,12 +1,17 @@
 import * as insomnia from './services/insomnia/connector'
 import * as ui from './ui'
-import { cleanupWorkspacesAsync } from './services/db'
+import { database } from './services/db'
+import { getRouter } from './services/insomnia/connector/refs-router'
 
 const initAsync = async () => {
   // initialize ui components
   await ui.renderAsync()
-  await cleanupWorkspacesAsync()
-  console.log('[plugin-navigator]', 'initialized')
+  // await cleanupWorkspacesAsync()
+
+  window.dev = {
+    router: getRouter(),
+    database: database,
+  }
 }
 
 let tries = 0

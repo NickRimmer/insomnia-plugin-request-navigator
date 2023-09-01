@@ -1,90 +1,115 @@
+/* eslint-disable @typescript-eslint/no-non-null-assertion */
 /* eslint-disable @typescript-eslint/no-explicit-any */
+
 import { useEffect, useRef, useState } from 'react'
 import { TabData } from './tabs-panel.types'
-import { onRouteChanged } from '../../services/insomnia/events/route-changed'
-import { database, Workspace, WorkspaceTab } from '../../services/db'
-import { getStore, getAllRequests, getRouter } from '../../services/insomnia/connector'
+import { Workspace, database } from '../../services/db'
+import { getActiveWorkspace, getAllRequests, getAllWorkspaces } from '../../services/insomnia/connector/refs-data'
+import { onDebugPageOpenChanged } from '../../services/insomnia/events/debug-page-opened'
 import { getRequestMethodName } from '../../services/helpers'
-
-const debugViewRouteTemplate = /\/organization\/org_[^/]+\/project\/proj_[^/]+\/workspace\/wrk_[^/]+\/debug/gm
 
 export const useTabsPanel = () => {
   const tabDataRef = useRef<TabData[]>([])
   const [tabs, _setTabs] = useState<TabData[]>([])
+  const [activeWorkspaceId, setActiveWorkspaceId] = useState<string | undefined>(undefined)
 
-  // reset tabs on route change
   useEffect(() => {
-    onRouteChanged(route => {
-      if (debugViewRouteTemplate.test(route)) requestChanged()
-      else if (tabDataRef.current.length > 0) _setTabs([])
+    const unSubonDebugPageOpenChanged = onDebugPageOpenChanged(opened => {
+      if (opened) {
+        setActiveWorkspaceId(getActiveWorkspace()?._id)
+      } else {
+        setActiveWorkspaceId(undefined)
+        tryToCleanupDb()
+      }
     })
 
-    if (debugViewRouteTemplate.test(getRouter().state.location.pathname))
-      requestChanged()
+    // when first load
+    setActiveWorkspaceId(getActiveWorkspace()?._id)
+
+    return () => {
+      unSubonDebugPageOpenChanged()
+    }
   }, [])
 
+  // when workspace opened
+  useEffect(() => {
+    if (!activeWorkspaceId) {
+      _setTabs([])
+      return
+    }
+
+    database.findOne({ workspaceId: activeWorkspaceId }, (err: any, doc: Workspace | undefined) => {
+      if (err) {
+        console.error('[plugin-navigator]', 'cannot get workspace data from db', err)
+        return
+      }
+
+      const allRequests = getAllRequests()
+      const loadedTabs: TabData[] = doc?.tabs.map(x => {
+        const request = allRequests.find(y => y._id === x.requestId)
+        if (!request) return null
+        const result: TabData = ({
+          requestId: request._id,
+          title: request.name,
+          isActive: x.isActive ?? false,
+          method: getRequestMethodName(request)
+        })
+
+        return result
+      }).filter(x => x) as TabData[] || []
+
+      setTabs(loadedTabs)
+    })
+  }, [activeWorkspaceId])
+
+  // update ref on tabs change
   useEffect(() => {
     tabDataRef.current = tabs
   }, [tabs])
 
-  const requestChanged = () => {
-    const store = getStore()
-    const state = store.getState()
-    const workspaceId = state.global.activeWorkspaceId
-    database.findOne<Workspace>({ workspaceId }, (err, storeWorkspace) => {
-      if (err) {
-        // if not able to load workspace tabs
-        console.error('[plugin-navigator]', 'error loading workspace tabs', err)
-        _setTabs([])
-      } else if (!storeWorkspace || storeWorkspace.tabs.length === 0) {
-        // if no saved tabs for workspace
-        _setTabs([])
-      } else {
-        // try to restore saved tabs
-        const allRequests = getAllRequests()
-        const loadedTabs = storeWorkspace
-          .tabs // all saved tabs for workspace
-          .map(x => ({ entity: x, doc: allRequests[x.requestId] })) // try to find request by id
-          .filter(x => x.doc) // filter out not found requests
-          .map<TabData>(x => { // map to tab data
-            const method = getRequestMethodName(x.doc)
-            return ({ requestId: x.doc._id, isActive: x.entity.isActive ?? false, method, title: x.doc.name })
-          }) || [] as TabData[]
-
-        // fix active tab
-        if (loadedTabs.length > 0 && loadedTabs.filter(x => x.isActive).length === 0) loadedTabs[0].isActive = true
-        setTabs(loadedTabs)
-      }
-    })
-  }
-
-  const setTabs = (tabs: TabData[]) => {
-    const store = getStore()
-    const state = store.getState()
-    const workspaceId = state.global.activeWorkspaceId
-
-    const workspaceTabs: Workspace = {
-      workspaceId,
-      tabs: tabs.map((tab, index) => {
-        const workspaceTab: WorkspaceTab = {
-          requestId: tab.requestId,
-          index: index,
-          isActive: tab.isActive,
-        }
-        return workspaceTab
-      }),
+  // set tabs and save to db
+  const setTabs = (x: TabData[]) => {
+    const currentWorkspaceId = getActiveWorkspace()?._id
+    if (!currentWorkspaceId) {
+      console.warn('[plugin-navigator]', 'cannot get current workspace id')
+      return
     }
 
-    database.update<Workspace>({ workspaceId }, workspaceTabs, { upsert: true }, (err) => {
-      if (err) console.error('[plugin-navigator]', 'error saving workspace tabs', err)
-    })
+    database.findOne({ workspaceId: currentWorkspaceId }, (err: any, doc: Workspace | undefined) => {
+      if (err) {
+        console.error('[plugin-navigator]', 'cannot get workspace data from db', err)
+        return
+      }
 
-    _setTabs(tabs)
+      doc = doc || { workspaceId: currentWorkspaceId, tabs: [] }
+      doc.tabs = x.map((tab, index) => ({ requestId: tab.requestId, index: index, isActive: tab.isActive }))
+
+      database.update({ workspaceId: currentWorkspaceId }, doc, { upsert: true }, (err: any) => {
+        if (err) console.error('[plugin-navigator]', 'cannot update workspace data in db', err)
+      })
+    })
+    _setTabs(x)
   }
 
   return {
     tabs,
     setTabs,
     tabDataRef,
+  }
+}
+
+const tryToCleanupDb = () => {
+  const allWorkspaces = getAllWorkspaces()
+  if (!allWorkspaces) return
+
+  try {
+    const existsWorkspaces = allWorkspaces.map(x => x._id)
+    const storedWorkspaces = database.getAllData()
+    const removeWorkspaces = storedWorkspaces.filter(x => !existsWorkspaces.includes(x.workspaceId))
+    removeWorkspaces.map(x => database.remove(x, err => {
+      if (err) console.error('[plugin-navigator]', 'cleanupWorkspaces error', err)
+    }))
+  } catch (err) {
+    console.error('[plugin-navigator]', 'cleanupWorkspaces', err)
   }
 }

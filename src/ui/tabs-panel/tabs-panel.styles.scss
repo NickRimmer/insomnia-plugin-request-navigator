@@ -21,10 +21,10 @@
       li {
         color: var(--hl);
         padding: 8px 22px;
-        background-color: var(--hl-xxs);
         border-bottom: solid 1px var(--hl-xs);
         cursor: pointer;
         position: relative;
+        white-space: nowrap;
 
         &:hover,
         &.active {

@@ -38,25 +38,6 @@ export const useRequestHandlers = ({ setTabs, tabDataRef }: { setTabs: (tabs: Ta
     return () => {
       unsubOnRequestSelected()
     }
-
-    // onRequestSelected((doc) => {
-    //   // const requestId = (doc as any).activeRequestId
-    //   // if (!requestId) {
-    //   //   console.warn('[plugin-navigator]', 'onRequestSelected', 'unexpected doc, activeRequestId not found', doc)
-    //   //   return
-    //   // }
-
-    //   // if (!tabDataRef.current.find(tab => tab.requestId == requestId)) {
-    //   //   const requestInfo = getAllRequests()[requestId]
-    //   //   const method = getRequestMethodName(requestInfo)
-    //   //   const tabData = { isActive: true, requestId, title: requestInfo.name, method }
-    //   //   tabDataRef.current.forEach((x) => x.isActive = false)
-    //   //   setTabs([...tabDataRef.current, tabData])
-    //   // } else {
-    //   //   tabDataRef.current.forEach((x) => x.isActive = x.requestId == requestId)
-    //   //   setTabs([...tabDataRef.current])
-    //   // }
-    // })
   }, [])
 
   // when request renamed - renamed tab

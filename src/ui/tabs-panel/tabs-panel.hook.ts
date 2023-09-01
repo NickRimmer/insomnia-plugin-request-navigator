@@ -4,7 +4,7 @@
 import { useEffect, useRef, useState } from 'react'
 import { TabData } from './tabs-panel.types'
 import { Workspace, database } from '../../services/db'
-import { getActiveWorkspace, getAllRequests } from '../../services/insomnia/connector/refs-data'
+import { getActiveWorkspace, getAllRequests, getAllWorkspaces } from '../../services/insomnia/connector/refs-data'
 import { onDebugPageOpenChanged } from '../../services/insomnia/events/debug-page-opened'
 import { getRequestMethodName } from '../../services/helpers'
 
@@ -19,6 +19,7 @@ export const useTabsPanel = () => {
         setActiveWorkspaceId(getActiveWorkspace()?._id)
       } else {
         setActiveWorkspaceId(undefined)
+        tryToCleanupDb()
       }
     })
 
@@ -94,5 +95,21 @@ export const useTabsPanel = () => {
     tabs,
     setTabs,
     tabDataRef,
+  }
+}
+
+const tryToCleanupDb = () => {
+  const allWorkspaces = getAllWorkspaces()
+  if (!allWorkspaces) return
+
+  try {
+    const existsWorkspaces = allWorkspaces.map(x => x._id)
+    const storedWorkspaces = database.getAllData()
+    const removeWorkspaces = storedWorkspaces.filter(x => !existsWorkspaces.includes(x.workspaceId))
+    removeWorkspaces.map(x => database.remove(x, err => {
+      if (err) console.error('[plugin-navigator]', 'cleanupWorkspaces error', err)
+    }))
+  } catch (err) {
+    console.error('[plugin-navigator]', 'cleanupWorkspaces', err)
   }
 }

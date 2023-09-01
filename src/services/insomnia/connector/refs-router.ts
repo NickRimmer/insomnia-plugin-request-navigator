@@ -18,7 +18,6 @@ export const initRouter = (): boolean => {
   }
 
   internalRouter = rootElement[containerElement].memoizedState.element.props.router
-  console.log('[plugin-navigator]', 'router initialized')
   return true
 }
 

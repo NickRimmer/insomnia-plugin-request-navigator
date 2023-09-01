@@ -34,8 +34,6 @@ export const initEvents = (): void => {
       notifyDebugPageOpenChanged(false)
     }
   })
-
-  console.log('[plugin-navigator]', 'events initialized')
 }
 
 const subscibeForDbChangeEvents = (callback: (data: InsomniaDocBase, method: string) => void): void => {

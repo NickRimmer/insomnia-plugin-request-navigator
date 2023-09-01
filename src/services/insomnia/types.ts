@@ -31,7 +31,13 @@ export type InsomniaRouter = {
       },
       'request/:requestId': {
         activeRequest: InsomniaDocBase
-      }
+      },
+      '/project/:projectId': {
+        workspaces: InsomniaDocBase[],
+      },
+    },
+    location: {
+      pathname: string,
     }
   }
 }

@@ -12,8 +12,6 @@ const initAsync = async () => {
     router: getRouter(),
     database: database,
   }
-
-  console.log('[plugin-navigator]', 'initialized')
 }
 
 let tries = 0

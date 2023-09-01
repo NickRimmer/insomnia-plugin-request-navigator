@@ -7,3 +7,5 @@ export const getRequestOrUndefined = (requestId: string): InsomniaDocBase | unde
 export const getActiveRequest = (): InsomniaDocBase | undefined => getData()['request/:requestId']['activeRequest']
 export const getActiveWorkspace = (): InsomniaDocBase | undefined => getData()[':workspaceId'] && getData()[':workspaceId']['activeWorkspace']
 export const getActiveProject = (): InsomniaDocBase | undefined => getData()[':workspaceId']['activeProject']
+export const getActiveOrgId = (): string | undefined => getRouter().state.location.pathname.match(/^\/organization\/(org_[^/]+)/)?.[1]
+export const getAllWorkspaces = (): InsomniaDocBase[] => getData()['/project/:projectId']?.workspaces

@@ -1,8 +1,8 @@
-import { getActiveProject, getActiveWorkspace } from '../connector/refs-data'
+import { getActiveOrgId, getActiveProject, getActiveWorkspace } from '../connector/refs-data'
 import { getRouter } from '../connector/refs-router'
 
 export const navigateToRequest = (requestId: string): boolean => {
-  const activeOrg = 'org_default-project' // TODO find from state
+  const activeOrg = getActiveOrgId()
   const activeProject = getActiveProject()?._id
   const activeWorkspace = getActiveWorkspace()?._id
 

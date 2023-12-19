@@ -6,7 +6,7 @@ import { useTabButton } from './tab-button.hook'
 
 export const TabButton: FC<TabButtonProps> = (props) => {
   const { children, isActive, requestId, title, method, isHidden } = props
-  const { contextMenuRef, onClickButton, onClickClose, onContextCloseTab, onContextCloseOthers, onContextCloseOnRight, onContextCloseAll } = useTabButton(props)
+  const { contextMenuRef, onClickButton, onClickAuxButton, onClickClose, onContextCloseTab, onContextCloseOthers, onContextCloseOnRight, onContextCloseAll } = useTabButton(props)
 
   return (
     <ContextMenuContainer
@@ -22,6 +22,7 @@ export const TabButton: FC<TabButtonProps> = (props) => {
       <div
         className={`plugin-request-navigator-tab-button ${isActive ? 'active' : ''} ${isHidden ? 'hidden' : ''}`}
         onClick={onClickButton}
+        onAuxClick={onClickAuxButton}
         data-request-id={requestId}
         data-title={title}
         data-method={method}

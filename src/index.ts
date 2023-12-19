@@ -16,7 +16,8 @@ const initAsync = async () => {
 
 let tries = 0
 const waitForConnectionAsync = async () => {
-  if (!insomnia.connect()) {
+  const connectionIsUp = await insomnia.connect()
+  if (!connectionIsUp) {
     if (tries++ < 25) window.setTimeout(waitForConnectionAsync, 200)
     else console.error('[plugin-navigator]', 'cannot connect to Insomnia')
   } else await initAsync()

@@ -1,4 +1,7 @@
-﻿If you like this plugin, [leave it a :star: on Github!](https://github.com/NickRimmer/insomnia-plugin-request-navigator)
+# Plugin is depricated
+As Insomnia changed their vision about using of app, plugin wasn't developing for a long time already. I decide to go with my own client, it is named [RestApia](https://www.restapia.app/)
+ 
+If you like this plugin, [leave it a :star: on Github!](https://github.com/NickRimmer/insomnia-plugin-request-navigator)
 
 # About
 
